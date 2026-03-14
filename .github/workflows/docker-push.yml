@@ -11,6 +11,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set lower case owner and repository name
+        run: |
+          echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
@@ -23,11 +27,11 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: ghcr.io/${{ env.REPO_LOWER }}:latest
 
       - name: Save Docker image as tar
         run: |
-          docker save ghcr.io/${{ github.repository }}:latest > digitaltwin-image.tar
+          docker save ghcr.io/${{ env.REPO_LOWER }}:latest > digitaltwin-image.tar
 
       - name: Upload Image Artifact
         uses: actions/upload-artifact@v4
