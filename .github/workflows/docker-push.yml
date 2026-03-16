@@ -39,34 +39,3 @@ jobs:
             path: digitaltwin-image.tar
             retention-days: 1
 
-      - name: Deploy to VPS
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: 68.178.171.221
-          username: rdltech
-          password: ssR%Oc4C#V1B
-          script: |
-            # Create a directory for deployment and the compose file
-            mkdir -p ~/digitaltwin-frontend-deploy
-            cd ~/digitaltwin-frontend-deploy
-
-            # Creating the docker-compose.yml on the VPS
-            cat <<EOF > docker-compose.yml
-            services:
-              frontend-service:
-                image: developer5rdl/rdl-frontend:latest
-                container_name: rdl-frontend
-                ports:
-                  - "80:3000"
-                restart: always
-            EOF
-
-            # Pull the image and deploy
-            # Forcefully stop and remove the conflicting container if it exists
-            sudo docker stop rdl-frontend || true
-            sudo docker rm rdl-frontend || true
-            # Clean up dangling images to save space
-            sudo docker image prune -f
-
-            sudo docker compose pull frontend-service
-            sudo docker compose up -d frontend-service
