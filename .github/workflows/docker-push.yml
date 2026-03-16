@@ -62,5 +62,6 @@ jobs:
             EOF
 
             # Pull the image and deploy
+            sudo docker compose down frontend-service || true
             sudo docker compose pull frontend-service
             sudo docker compose up -d frontend-service
