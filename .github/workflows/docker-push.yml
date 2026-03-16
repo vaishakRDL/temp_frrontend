@@ -62,6 +62,11 @@ jobs:
             EOF
 
             # Pull the image and deploy
-            sudo docker compose down frontend-service || true
+            # Forcefully stop and remove the conflicting container if it exists
+            sudo docker stop rdl-frontend || true
+            sudo docker rm rdl-frontend || true
+            # Clean up dangling images to save space
+            sudo docker image prune -f
+
             sudo docker compose pull frontend-service
             sudo docker compose up -d frontend-service
